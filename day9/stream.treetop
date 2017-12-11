@@ -1,0 +1,31 @@
+grammar Stream
+  rule stream
+    group {
+      def total_score
+        group.total_score(1)
+      end
+    }
+  end
+
+  rule items
+    (first_item:items ',' second_item:items / group) {
+    def total_score(my_score)
+      puts text_value
+      puts elements
+      if group
+        group.total_score(my_score)
+      else
+        first_item.total_score(my_score) + second_item.total_score(my_score)
+      end
+    end
+  }
+  end
+
+  rule group
+    '{' items '}' {
+      def total_score(my_score)
+        my_score + items.total_score(my_score + 1)
+      end
+    }
+  end
+end

@@ -1,6 +1,6 @@
 grammar Stream
   rule stream
-    group {
+    group:group {
       def total_score
         group.total_score(1)
       end
@@ -8,21 +8,21 @@ grammar Stream
   end
 
   rule items
-    (first_item:items ',' second_item:items / group) {
+    (group:group ',' items:items / group:group / '') {
     def total_score(my_score)
-      puts text_value
-      puts elements
-      if group
+      if defined? items
+        group.total_score(my_score) + items.total_score(my_score)
+      elsif defined? group
         group.total_score(my_score)
       else
-        first_item.total_score(my_score) + second_item.total_score(my_score)
+        0
       end
     end
   }
   end
 
   rule group
-    '{' items '}' {
+    ('{' items:items '}') {
       def total_score(my_score)
         my_score + items.total_score(my_score + 1)
       end

@@ -1,0 +1,41 @@
+grammar Stream
+  rule stream
+    group:group {
+      def total_score
+        group.total_score(1)
+      end
+    }
+  end
+
+  rule items
+    (something:something ',' items:items / something:something) {
+    def total_score(my_score)
+      if defined? items
+        something.total_score(my_score) + items.total_score(my_score)
+      else
+        something.total_score(my_score)
+      end
+    end
+  }
+  end
+
+  rule something
+    group / empty
+  end
+
+  rule empty
+    '' {
+      def total_score(_)
+        0
+      end
+    }
+  end
+
+  rule group
+    ('{' items:items '}') {
+      def total_score(my_score)
+        my_score + items.total_score(my_score + 1)
+      end
+    }
+  end
+end

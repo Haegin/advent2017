@@ -13,15 +13,15 @@ class Firewall
   end
 
   def is_caught(delay)
-    (0..layers.keys.max).none? do |layer|
-      layers[layer] && (layer + delay) % ((layers[layer] * 2) - 2) == 0
+    layers.none? do |layer, depth|
+      (layer + delay) % ((depth - 1) * 2) == 0
     end
   end
 
   def caught(delay = 0)
-    (0..layers.keys.max).select do |layer|
-      layers[layer] && (layer + delay) % ((layers[layer] * 2) - 2) == 0
-    end
+    layers.select do |layer, depth|
+      (layer + delay) % ((depth - 1) * 2) == 0
+    end.map(&:first)
   end
 
   def trip_severity(delay = 0)
